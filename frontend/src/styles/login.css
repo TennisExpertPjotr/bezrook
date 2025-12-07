@@ -11,7 +11,7 @@ html {
 body {
     height: 100vh;
     background: radial-gradient(circle, #0085FF, #003465);
-    background-image: url('../img/orig.webp');
+    background-image: url('/img/orig.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -107,7 +107,6 @@ input {
   appearance: none;
 }
 
-/* Скрываем встроенный глаз в Edge и Chrome */
 input[type="password"]::-ms-reveal {
   display: none;
 }
@@ -161,7 +160,7 @@ input:focus {
 
     cursor: pointer;
 
-    background-image: url(../img/clarity_eye-hide-line.svg);
+    background-image: url(/img/clarity_eye-hide-line.svg);
     background-position: center;
     background-size: cover;
 }
@@ -283,7 +282,6 @@ input:focus {
     justify-content: center;
 }
 
-/* Сам крестик */
 .close-btn::before,
 .close-btn::after {
     content: '';
@@ -301,3 +299,4 @@ input:focus {
 .close-btn::after {
     transform: rotate(-45deg);
 }
+

@@ -84,7 +84,7 @@ body {
 }
 
 .tfa-text {
-    background-image: url('../img/ambar-lock.png');
+    background-image: url('/img/ambar-lock.png');
     background-position: right center;
     background-repeat: no-repeat;
     background-size: 20px;
@@ -156,7 +156,7 @@ body {
     border: none;
     outline: none;
     background-color: #fff;
-    background-image: url('../img/terminate.png');
+    background-image: url('/img/terminate.png');
     background-size: 16px;
     background-position: center;
     background-repeat: no-repeat;

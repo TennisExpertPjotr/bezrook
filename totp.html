@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/totp.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>TOTP</title>
+</head>
+<body>
+        <div class="error-container">
+            <span class="ttl"></span>
+            <p class="error-message">
+                Ошибка
+            </p>
+            <button class="close-btn" aria-label="Закрыть"></button>
+        </div>
+        <div class="login-container">
+            <h1 class="logo">bezrook</h1>
+                
+            <form class="totp-form" action="#" method="POST">
+                <h2 class="form-header">TOTP</h2>
+
+                <div class="digits-container">
+                    <input type="text" class="digit-input">
+                    <input type="text" class="digit-input">
+                    <input type="text" class="digit-input">
+                    <input type="text" class="digit-input">
+                    <input type="text" class="digit-input">
+                    <input type="text" class="digit-input">
+                </div>
+            </form>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.digit-input');
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+
+                    // Ограничиваем ввод только одной цифрой
+                    if (/^\d$/.test(value)) {
+                        // Делаем следующее поле активным, если оно существует
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    } else if (value === '') {
+                        // Если поле очищено, ничего не делаем здесь (Backspace обрабатывается отдельно)
+                    } else {
+                        // Если введено не цифра или больше одного символа — очищаем
+                        e.target.value = '';
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        // Если нажат Backspace и поле пустое — фокус на предыдущее
+                        inputs[index - 1].focus();
+                    }
+                });
+        });
+    });
+    </script>
+</body>
+</html>

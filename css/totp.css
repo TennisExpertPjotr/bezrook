@@ -1,0 +1,28 @@
+.totp-form {
+    width: 340px;
+}
+
+.digits-container {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.digit-input {
+    width: 50px;
+    height: 70px;
+    margin: 0;
+    padding: 10px;
+
+    border-radius: 8px;
+    border: none;
+    outline: none;
+
+    text-align: center;
+    font-size: 46px;
+}
+
+.digit-input:focus {
+    box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,166 @@
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+
+.header {
+    padding: 16px;
+    margin-bottom: 48px;
+    background-color: #000;
+    color: #fff;
+
+    text-align: center;
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+}
+
+.logo {
+    margin: 0;
+}
+
+.account-container {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 48px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-photo {
+  width: 150px;        
+  height: 150px;   
+  margin-bottom: 24px;      
+  border-radius: 50%;    
+  object-fit: cover;  
+  
+  outline: 2px solid #000;
+}
+
+.login {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.tfa-container {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 48px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.add-tfa {
+    padding: 0;
+    padding: 16px 32px;
+
+    outline: none;
+    border: none;
+    border: 1px solid #000;
+    border-radius: 8px;
+    background-color: #fff;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition: background-color 0.1s ease-in-out;
+}
+
+.add-tfa:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.tfa-text {
+    background-image: url('../img/ambar-lock.png');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+
+    padding-right: 24px;
+}
+
+.sessions-container {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.sessions-title {
+    margin: 0;
+    margin-bottom: 24px;
+    padding-left: 48px;
+
+    font-weight: 500;
+}
+
+.session {
+    margin-bottom: 16px;
+    padding: 16px 48px;
+
+    border: 1px solid #000;
+    border-radius: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.online-indicator {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.pulse-circle {
+    width: 14px;
+    height: 14px;
+    background-color: #1a9145;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    animation: pulse 2.4s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+  }
+}
+
+.terminate-session {
+    width: 20px;
+    height: 20px;
+
+    margin-right: 4px;
+
+    border: none;
+    outline: none;
+    background-color: #fff;
+    background-image: url('../img/terminate.png');
+    background-size: 16px;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    cursor: pointer;
+}
+

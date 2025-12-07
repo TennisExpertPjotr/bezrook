@@ -4,52 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/account.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <title>Login</title>
+    <title>Account</title>
 </head>
 <body>
-        <div class="login-container">
+    <div class="header">
+        <div class="container">
             <h1 class="logo">bezrook</h1>
-                
-            <form class="login-form" action="#" method="POST">
-                <h2 class="form-header">Login</h2>
-
-                <div class="form-group">
-                    <label class="form-label" for="email">Email</label>
-                    <input  class="form-input" type="email" id="email" name="email" placeholder="username@gmail.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="password-input">
-                        <input class="form-input form-input-m0" type="password" id="password" name="password" placeholder="password" required>
-                        <span class="toggle-password" id="togglePassword"></span> 
-                    </div>
-                </div>
-
-                <button type="submit" class="sign-in-btn">Sign in</button>
-
-                <div class="signup-text">
-                    Don't have an account yet? <a class="signup-link" href="#">Register for free</a>
-                </div>
-            </form>
         </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggle = document.getElementById('togglePassword');
-            const passwordField = document.getElementById('password');
-
-            if (toggle && passwordField) {
-                toggle.addEventListener('click', () => {
-                    const isPassword = passwordField.type === 'password';
-                    passwordField.type = isPassword ? 'text' : 'password';
-                });
-            }
-        });
-    </script>
+    </div>
+    <div class="account-container">
+        <img src="img/profile-example.jpg" alt="Аватар" class="profile-photo">
+        <span class="login">username</span>
+        <span class="signup-date">07-12-2025</span>
+    </div>
+    <div class="tfa-container">
+        <div class="add-tfa">
+            <span class="tfa-text">Включить TOTP 2FA</span>
+        </div>
+    </div>
+    <div class="sessions-container">
+        <h2 class="sessions-title">Сессии</h2>
+        <div class="session" id="currentSession">
+            <span class="session-device">DESKTOP-2feb</span>
+            <div class="session-start-time">14:07 07-12-2025</div>
+            <div class="online-indicator">
+                <div class="pulse-circle"></div>
+            </div>
+        </div>
+        <div class="session">
+            <span class="session-device">DESKTOP-2fca</span>
+            <div class="session-start-time">12:07 07-12-2025</div>
+            <button class="terminate-session"></button>
+        </div>
+    </div>
 </body>
 </html>

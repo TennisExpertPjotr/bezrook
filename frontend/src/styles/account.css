@@ -9,7 +9,8 @@ html {
 }
 
 
-.header {
+.account-page .header {
+    width: 100%;
     padding: 16px;
     margin-bottom: 48px;
     background-color: #000;
@@ -18,8 +19,14 @@ html {
     text-align: center;
 }
 
-body {
+.account-page {
     font-family: "Montserrat", sans-serif;
+    background-image: none;
+    background-color: #fff;
+
+    display: block;
+    width: 100vw;
+    height: 100vh;
 }
 
 .logo {
@@ -162,5 +169,28 @@ body {
     background-repeat: no-repeat;
 
     cursor: pointer;
+
+    position: relative;
+}
+
+.terminate-session::after {
+  content: "Прервать сессию";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.terminate-session:hover::after {
+  opacity: 1;
 }
 

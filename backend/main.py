@@ -6,9 +6,10 @@ from pydantic import BaseModel
 from typing import Optional
 import os
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 
 from database import SessionLocal, engine, Base
-from models import User, UserSession
+from models import User, UserSession, PendingTotp
 from auth import get_password_hash, verify_password, create_access_token, verify_token
 from totp_utils import generate_totp_secret, verify_totp_code, generate_qr_code
 
@@ -67,6 +68,7 @@ class TOTPVerifyResponse(BaseModel):
 class UserResponse(BaseModel):
     username: str
     signup_date: str
+    totp_enabled: bool
 
 
 class SessionResponse(BaseModel):
@@ -94,8 +96,10 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ):
+    print(credentials, credentials.credentials)
     token = credentials.credentials
     payload = verify_token(token)
+    print(payload)
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -140,10 +144,8 @@ async def login(request: LoginRequest, db: Session = Depends(get_db)):
             detail="Invalid login or password"
         )
     
-    # Создаем токен
-    token = create_access_token(data={"sub": user.id})
+    token = create_access_token(data={"sub": str(user.id)})
     
-    # Создаем сессию
     import datetime
     session = UserSession(
         user_id=user.id,
@@ -167,21 +169,68 @@ async def login(request: LoginRequest, db: Session = Depends(get_db)):
 async def get_user(current_user: User = Depends(get_current_user)):
     return UserResponse(
         username=current_user.login,
-        signup_date=current_user.created_at.strftime("%d-%m-%Y")
+        signup_date=current_user.created_at.strftime("%d-%m-%Y"),
+        totp_enabled=bool(current_user.totp_secret)
     )
 
 
 @app.post("/api/totp/setup", response_model=TOTPSetupResponse)
-async def setup_totp(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def setup_totp(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.totp_secret:
+        raise HTTPException(status_code=400, detail="TOTP уже включён")
+
     secret = generate_totp_secret()
-    qr_code = generate_qr_code(current_user.login, secret)
-    
-    # Сохраняем секрет в БД
-    current_user.totp_secret = secret
+
+    # Удаляем старую pending-запись, если есть
+    existing = db.query(PendingTotp).filter(PendingTotp.user_id == current_user.id).first()
+    if existing:
+        db.delete(existing)
+        db.commit()
+
+    # Сохраняем в pending
+    pending = PendingTotp(
+        user_id=current_user.id,
+        pending_totp_secret=secret
+    )
+    db.add(pending)
     db.commit()
-    
+
+    qr_code = generate_qr_code(current_user.login, secret)
+
     return TOTPSetupResponse(secret=secret, qr_code=qr_code)
 
+
+@app.post("/api/totp/setup/verify", response_model=TOTPVerifyResponse)
+async def confirm_totp_setup(
+    request: TOTPVerifyRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.totp_secret:
+        raise HTTPException(status_code=400, detail="TOTP уже включён")
+
+    pending = db.query(PendingTotp).filter(PendingTotp.user_id == current_user.id).first()
+
+    if not pending:
+        raise HTTPException(status_code=400, detail="Нет активной настройки TOTP. Начните сначала.")
+
+    # Проверка срока действия (10 минут)
+    if datetime.utcnow() - pending.created_at > timedelta(minutes=10):
+        db.delete(pending)
+        db.commit()
+        raise HTTPException(status_code=400, detail="Время настройки истекло. Начните заново.")
+
+    if not verify_totp_code(pending.pending_totp_secret, request.code):
+        raise HTTPException(status_code=400, detail="Неверный TOTP-код")
+
+    current_user.totp_secret = pending.pending_totp_secret
+    db.delete(pending)
+    db.commit()
+
+    return TOTPVerifyResponse(success=True, message="TOTP успешно включён")
 
 @app.post("/api/totp/verify", response_model=TOTPVerifyResponse)
 async def verify_totp(

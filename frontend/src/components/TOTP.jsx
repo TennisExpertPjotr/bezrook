@@ -85,6 +85,11 @@ function TOTP() {
       setError(errorMessage)
       setShowError(true)
       setTimeout(() => setShowError(false), 5000)
+      
+      setDigits(['', '', '', '', '', ''])
+      setTimeout(() => {
+        inputRefs.current[0]?.focus()
+      }, 0)
     } finally {
       setIsSubmitting(false)
     }

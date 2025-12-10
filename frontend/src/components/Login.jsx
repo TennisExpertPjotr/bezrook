@@ -21,7 +21,6 @@ function Login() {
         password
       })
       
-      // Сохраняем токен (если бэкенд вернет токен)
       if (response.data.token) {
         localStorage.setItem('token', response.data.token)
       }

@@ -3,6 +3,15 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
 
+class PendingTotp(Base):
+    __tablename__ = "pending_totp"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
+    pending_totp_secret = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="pending_totp")
 
 class User(Base):
     __tablename__ = "users"
@@ -14,6 +23,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     
     sessions = relationship("UserSession", back_populates="user")
+    pending_totp = relationship("PendingTotp", back_populates="user", uselist=False)
 
 
 class UserSession(Base):

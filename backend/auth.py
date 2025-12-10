@@ -31,8 +31,11 @@ def create_access_token(data: dict):
 
 def verify_token(token: str):
     try:
+        print("TOKEN:", token)
+        print(SECRET_KEY)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
+    except JWTError as Error:
+        print(Error)
         return None
 

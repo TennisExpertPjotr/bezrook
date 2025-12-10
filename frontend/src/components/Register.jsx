@@ -13,6 +13,18 @@ function Register() {
   const [showError, setShowError] = useState(false)
   const navigate = useNavigate()
 
+  // login validation
+  const validateLogin = (lgn) => {
+    if (lgn.length < 3) return "Логин должен содержать не менее 3 символов.";
+
+    const allowedPattern = /^[a-zA-Z0-9.\-]+$/;
+    if (!allowedPattern.test(lgn)) {
+      return "Логин может содержать только латинские буквы, цифры, точку и тире.";
+    }
+    return null;
+  }
+
+  // password validation
   const validatePassword = (pwd) => {
     if (pwd.length < 10) return "Пароль должен содержать не менее 10 символов."
     if (!/[a-z]/.test(pwd)) return "Пароль должен содержать хотя бы одну строчную букву."
@@ -29,12 +41,19 @@ function Register() {
 
     let error = null
 
-    // Проверка пароля
+    // password check
     const pwdError = validatePassword(password)
     if (pwdError) {
       error = pwdError
     }
-    // Проверка совпадения
+
+    // login check
+    const lgnError = validateLogin(login)
+    if (lgnError) {
+      error = lgnError
+    }
+
+    // password coincidence check
     else if (password !== passwordRep) {
       error = "Пароли не совпадают."
     }

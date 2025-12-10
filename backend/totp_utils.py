@@ -33,5 +33,5 @@ def generate_qr_code(username: str, secret: str) -> str:
 def verify_totp_code(secret: str, code: str) -> bool:
     """Проверяет TOTP код"""
     totp = pyotp.TOTP(secret)
-    return totp.verify(code, valid_window=1)  # valid_window=1 позволяет небольшую погрешность во времени
+    return totp.verify(code, valid_window=1)  # valid_window=1 позволяем небольшую погрешность во времени
 

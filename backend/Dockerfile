@@ -7,5 +7,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ src/
+COPY alembic.ini ./
+COPY alembic/ alembic/
 
-CMD [ "python", "src/main.py"]
+CMD ["sh", "-c", "alembic upgrade head && exec python src/main.py"]

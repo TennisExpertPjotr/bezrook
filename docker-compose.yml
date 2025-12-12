@@ -11,7 +11,8 @@ services:
       - front-net
       - back-net
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       POSTGRES_USER: bezrook-admin
       POSTGRES_DB: bezrook
@@ -48,6 +49,13 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     secrets:
       - db_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
 
   adminer:
     image: adminer:latest

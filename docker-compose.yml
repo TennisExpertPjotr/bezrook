@@ -1,0 +1,69 @@
+name: bezrook
+
+services:
+
+  backend:
+    build: backend/
+    restart: always
+    hostname: "backend"
+    container_name: "backend"
+    networks:
+      - front-net
+      - back-net
+    depends_on:
+      - database
+    environment:
+      POSTGRES_USER: bezrook-admin
+      POSTGRES_DB: bezrook
+    ports:
+      - 8000:8000
+    secrets:
+      - db_password
+      - jwt_key
+
+
+  frontend:
+    build: frontend/
+    restart: always
+    hostname: "frontend"
+    container_name: "frontend"
+    networks:
+      - front-net
+    depends_on:
+      - database
+      - backend
+    ports:
+      - 3000:3000
+
+  database:
+    image: postgres:latest
+    restart: always
+    hostname: "database"
+    container_name: "database"
+    networks:
+      - back-net
+    environment:
+      POSTGRES_USER: "bezrook-admin"
+      POSTGRES_DB: "bezrook"
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    container_name: "adminer"
+    networks:
+      - back-net
+    ports:
+      - 9000:8080
+
+networks:
+  front-net:
+  back-net:
+
+secrets:
+  db_password:
+    file: secrets/db_password.txt
+  jwt_key:
+    file: secrets/jwt_key.txt

@@ -3,8 +3,11 @@ FROM python:3
 WORKDIR /usr/app
 
 COPY requirements.txt ./
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY src/ src/
+COPY alembic.ini ./
+COPY alembic/ alembic/
 
-CMD [ "python", "main.py"]
+CMD ["sh", "-c", "alembic upgrade head && exec python src/main.py"]

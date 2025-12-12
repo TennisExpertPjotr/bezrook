@@ -1,7 +1,11 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from database import Base
+from sqlalchemy.ext.declarative import declarative_base
+
+
+Base = declarative_base()
+
 
 class PendingTotp(Base):
     __tablename__ = "pending_totp"
@@ -13,6 +17,7 @@ class PendingTotp(Base):
 
     user = relationship("User", back_populates="pending_totp")
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -21,7 +26,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     totp_secret = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     sessions = relationship("UserSession", back_populates="user")
     pending_totp = relationship("PendingTotp", back_populates="user", uselist=False)
 
@@ -33,6 +38,5 @@ class UserSession(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     device = Column(String, nullable=False)
     start_time = Column(DateTime, default=datetime.utcnow)
-    
-    user = relationship("User", back_populates="sessions")
 
+    user = relationship("User", back_populates="sessions")

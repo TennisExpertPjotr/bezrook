@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from logging import getLogger
 
 from schemas import SessionsResponse, SessionResponse
 from dependencies import get_db, get_current_user
@@ -7,6 +8,9 @@ from models import User, UserSession
 
 
 router = APIRouter(redirect_slashes=True)
+
+
+logger = getLogger('sessions-logger')
 
 
 @router.get("", response_model=SessionsResponse)
@@ -37,6 +41,7 @@ async def terminate_session(
     ).first()
 
     if not session:
+        logger.warn(f'Try of to deleting non-existing session from "{current_user.login}"')
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Session not found"

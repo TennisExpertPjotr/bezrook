@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+from logging import getLogger
 
 from totp_utils import generate_totp_secret, verify_totp_code, generate_qr_code
 from schemas import TOTPSetupResponse, TOTPVerifyRequest, TOTPVerifyResponse
@@ -9,6 +10,8 @@ from models import User, PendingTotp
 
 
 router = APIRouter(redirect_slashes=False)
+
+logger = getLogger('totp-logger')
 
 
 @router.post("/setup", response_model=TOTPSetupResponse)
@@ -61,6 +64,7 @@ async def confirm_totp_setup(
         raise HTTPException(status_code=400, detail="Время настройки истекло. Начните заново.")
 
     if not verify_totp_code(pending.pending_totp_secret, request.code):
+        logger.warn(f'Invalid TOTP code got from "{current_user.login}"')
         raise HTTPException(status_code=400, detail="Неверный TOTP-код")
 
     current_user.totp_secret = pending.pending_totp_secret
@@ -85,8 +89,10 @@ async def verify_totp(
     is_valid = verify_totp_code(current_user.totp_secret, request.code)
 
     if is_valid:
+        logger.info(f'Correct TOTP code got from "{current_user.login}"')
         return TOTPVerifyResponse(success=True, message="TOTP code verified")
     else:
+        logger.warn(f'Invalid TOTP code got from "{current_user.login}"')
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid TOTP code"

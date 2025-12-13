@@ -21,6 +21,12 @@ services:
     secrets:
       - db_password
       - jwt_key
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 
 
   frontend:
@@ -35,6 +41,12 @@ services:
       - backend
     ports:
       - 3000:3000
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 
   database:
     image: postgres:latest
@@ -55,7 +67,11 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   adminer:
     image: adminer:latest
